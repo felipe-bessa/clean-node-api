@@ -4,7 +4,8 @@
   "description": "API Nodejs desenvolvida com TDD e arquitetura Clean para fins de solidificar conhecimento.",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "dev": "node api/server.js"
   },
   "repository": {
     "type": "git",
