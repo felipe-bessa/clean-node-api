@@ -7,17 +7,17 @@ class LoginRouter {
     
     route(httpRequest) {
         if(!httpRequest || !httpRequest.body) {
-            return {
-                statusCode: 500
-            }
+            return HttpResponse.internalServerError();
         }
 
         const { username, password } = httpRequest.body;
-        if(!username || !password) {
-            return {
-                statusCode: 400
-            }
-        }        
+        if(!username) {
+            return HttpResponse.badRequest("username");
+        }
+
+        if(!password) {
+            return HttpResponse.badRequest("password");
+        }
     }
 
     _verifyCredentials(username, password) {
@@ -26,6 +26,28 @@ class LoginRouter {
          * 
          * Pesquisa no Repository se o determinado usuário tem acesso ao sistema
          */
+    }
+}
+
+class HttpResponse {
+    static badRequest(paramName) {
+        return {
+            statusCode: 400,
+            body: new MissingParamsError(paramName)
+        }
+    }
+
+    static internalServerError() {
+        return {
+            statusCode: 500
+        }
+    }
+}
+
+class MissingParamsError extends Error {
+    constructor (paramName) {
+        super(`Missing Params ${paramName}`);
+        this.name = "MissingParamsError";
     }
 }
 
@@ -41,7 +63,7 @@ describe("Login Router", () => {
     });
     */
 
-    test("Should return 400 if no email is provided", () => {
+    test("Should return 400 if no username is provided", () => {
         const systemUnderTest = new LoginRouter();
         const httpRequest = {
             body: {
@@ -50,6 +72,7 @@ describe("Login Router", () => {
         }
         const httpResponse = systemUnderTest.route(httpRequest);
         expect(httpResponse.statusCode).toBe(400);
+        expect(httpResponse.body).toEqual(new MissingParamsError("username"));
     });
 
     test("Should return 400 if no password is provided", () => {
@@ -62,6 +85,7 @@ describe("Login Router", () => {
 
         const httpResponse = systemUnderTest.route(httpRequest);
         expect(httpResponse.statusCode).toBe(400);
+        expect(httpResponse.body).toEqual(new MissingParamsError("password"));
     });
 
     /*
