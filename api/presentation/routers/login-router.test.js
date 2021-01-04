@@ -6,6 +6,12 @@
 class LoginRouter {
     
     route(httpRequest) {
+        if(!httpRequest || !httpRequest.body) {
+            return {
+                statusCode: 500
+            }
+        }
+
         const { username, password } = httpRequest.body;
         if(!username || !password) {
             return {
@@ -71,4 +77,18 @@ describe("Login Router", () => {
         expect(httpResponse.statusCode).toBe(401)
     });
     */
+
+    test("Should return 500 if no httpRequest is provided", () => {
+        const systemUnderTest = new LoginRouter();
+
+        const httpResponse = systemUnderTest.route();
+        expect(httpResponse.statusCode).toBe(500);
+    });
+
+    test("Should return 500 if no httpRequest has no body", () => {
+        const systemUnderTest = new LoginRouter();
+        const httpRequest = {};
+        const httpResponse = systemUnderTest.route(httpRequest);
+        expect(httpResponse.statusCode).toBe(500);
+    });
 });
