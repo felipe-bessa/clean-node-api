@@ -7,7 +7,7 @@ class LoginRouter {
     
     route(httpRequest) {
         //!httpRequest.hasUserName()
-        if(!httpRequest.body.username) {
+        if(!httpRequest.body.username || !httpRequest.body.password) {
             return {
                 statusCode: 400
             }
@@ -50,6 +50,18 @@ describe("Login Router", () => {
                 password: "any_password"
             }
         }
+        const httpResponse = systemUnderTest.route(httpRequest);
+        expect(httpResponse.statusCode).toBe(400);
+    });
+
+    test("Should return 400 if no password is provided", () => {
+        const systemUnderTest = new LoginRouter();
+        const httpRequest = {
+            body: {
+                username: "any_username"
+            }
+        }
+
         const httpResponse = systemUnderTest.route(httpRequest);
         expect(httpResponse.statusCode).toBe(400);
     });
