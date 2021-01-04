@@ -6,20 +6,12 @@
 class LoginRouter {
     
     route(httpRequest) {
-        //!httpRequest.hasUserName()
-        if(!httpRequest.body.username || !httpRequest.body.password) {
+        const { username, password } = httpRequest.body;
+        if(!username || !password) {
             return {
                 statusCode: 400
             }
         }        
-    }
-
-    _hasUserName(req) {
-        return !!req.body.username;
-    }
-
-    _hasPassword() {
-
     }
 
     _verifyCredentials(username, password) {
